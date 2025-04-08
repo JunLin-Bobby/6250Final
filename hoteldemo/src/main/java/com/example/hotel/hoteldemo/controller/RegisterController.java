@@ -21,8 +21,8 @@ public class RegisterController {
     }
     
     @PostMapping("/register")
-    public String showPage(@ModelAttribute("user") User user){
+    public String processRegister(@ModelAttribute("user") User user){
         userDAO.save(user);
-        return "success";
+        return "redirect:/login";
     }
 }

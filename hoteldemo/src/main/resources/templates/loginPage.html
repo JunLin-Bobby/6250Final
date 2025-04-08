@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<div class="login">
+    <h1>Welcome to Hotel Booking Website</h1>
+</div>
+
+<div>
+    <form th:action="@{/login}" th:object="${loginForm}" method="post">
+        <div>
+            Email: <input type="text" th:field="*{email}" />
+            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color:red"></span>
+        </div>
+        <div>
+            Password: <input type="password" th:field="*{password}" />
+            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color:red"></span>
+        </div>
+
+        <div th:if="${loginError != null}" style="color:red">
+            <p th:text="${loginError}"></p>
+        </div>
+
+        <input type="submit" value="Login"/>
+    </form>
+</div>
+</body>
+</html>
