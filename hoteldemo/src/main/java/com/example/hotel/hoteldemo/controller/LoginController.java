@@ -1,6 +1,7 @@
 package com.example.hotel.hoteldemo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jms.JmsProperties.Listener.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,7 +23,10 @@ public class LoginController {
     UserDAO userDAO;
 
     @GetMapping("/login")
-    public String showPage(Model model) {
+    public String showPage(Model model,HttpSession session) {
+        if(session.getAttribute("loggedInUser")!=null){
+            return "redirect:/dashboard";
+        }
         model.addAttribute("loginForm",new LoginForm());
         return "loginPage";
     }
@@ -42,6 +46,12 @@ public class LoginController {
         }
 
         session.setAttribute("loggedInUser", user);
+        return "redirect:/dashboard";
+    }
+    
+    @GetMapping("/logout")
+    public String processLogout(HttpSession session,Model model) {
+        session.invalidate();
         return "redirect:/dashboard";
     }
 

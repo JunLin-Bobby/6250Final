@@ -80,11 +80,18 @@
 <!-- Navbar -->
 <div class="navbar">
   <div class="nav-links">
-    <a th:href="@{/my-reservation}">My Reservation</a>
-    <a th:href="@{/make-reservation}">Make Reservation</a>
+    <a th:href="@{/my-reservation}" th:if="${user != null}">My Reservation</a>
+    <a th:href="@{/booking}" th:if="${user != null}">Make Reservation</a>
   </div>
+
   <div class="user-info">
-    Welcome, <span th:text="${user.firstName}">User</span>
+    <span th:if="${user != null}">
+      Welcome, <span th:text="${user.firstName}">User</span> |
+      <a th:href="@{/logout}" style="color: white; text-decoration: underline;">Logout</a>
+    </span>
+    <span th:if="${user == null}">
+      <a th:href="@{/login}" style="color: white; text-decoration: underline;">Login</a>
+    </span>
   </div>
 </div>
 
@@ -101,32 +108,36 @@
     <option value="1">1-Person Room</option>
     <option value="2">2-Person Room</option>
     <option value="3">3-Person Room</option>
-    <option value="4">4-Person Room/option>
+    <option value="4">4-Person Room</option>
   </select>
 
   <button type="submit">Search</button>
-</form>
 
+</form>
 <!-- Result Section -->
-<div th:if="${rooms != null}">
-  <h2 style="text-align: center;">Available Rooms</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Room Number</th>
-        <th>Capacity</th>
-        <th>Price Per Night</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr th:each="room : ${rooms}">
-        <td th:text="${room.roomNumber}"></td>
-        <td th:text="${room.capacity}"></td>
-        <td th:text="${room.pricePerNight}"></td>
-      </tr>
-    </tbody>
-  </table>
+<div th:if="${rooms != null}" style="text-align: center; margin-top: 2rem;">
+  <h2>Available Rooms</h2>
+  
+  <form th:action="@{/book-room}" method="post" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 1.5rem;">
+    
+    <div th:each="room : ${rooms}" style="border: 1px solid #ccc; border-radius: 8px; padding: 1rem; width: 250px;">
+      <label style="display: block; cursor: pointer;">
+        <input type="radio" name="roomID" th:value="${room.roomID}" required style="margin-bottom: 0.5rem;" />
+        <div>
+          <p><strong>Room Number:</strong> <span th:text="${room.roomNumber}"></span></p>
+          <p><strong>Capacity:</strong> <span th:text="${room.capacity}"></span> Person(s)</p>
+          <p><strong>Price/Night:</strong> $<span th:text="${room.pricePerNight}"></span></p>
+        </div>
+      </label>
+    </div>
+    
+    <div style="width: 100%; text-align: center; margin-top: 1rem;">
+      <button type="submit" style="padding: 0.7rem 2rem; font-weight: bold;">Reserve</button>
+    </div>
+    
+  </form>
 </div>
+
 
 </body>
 </html>

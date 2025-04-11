@@ -34,8 +34,14 @@ public class HoteldemoApplication implements CommandLineRunner{
             Room room = new Room();
             room.setRoomNumber("R00" + i);
             room.setCapacity(i);
-            room.setPricePerNight(100.0 * i); // 價格範例
-
+            room.setPricePerNight(100.0 * i); 
+            roomDAO.save(room);
+        }
+		for (int i = 5; i <= 8; i++) {
+            Room room = new Room();
+            room.setRoomNumber("R00" + i);
+            room.setCapacity(1);
+            room.setPricePerNight(120.0 * i); 
             roomDAO.save(room);
         }
 

@@ -13,9 +13,11 @@ public class LoginInterceptor implements HandlerInterceptor{
                                Object handler) throws Exception {
         HttpSession session = request.getSession(false);//if session doesn't exist, return null
         if(session!=null&&session.getAttribute("loggedInUser")!=null){
+            System.out.println("!!!!!!!!!!!");
             return true;
         }
-        
+    response.sendRedirect("/login");    
+    System.out.println("intercepted");
     return false;
 }
 

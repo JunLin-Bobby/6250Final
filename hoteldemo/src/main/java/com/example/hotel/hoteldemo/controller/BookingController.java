@@ -30,8 +30,7 @@ public class BookingController {
     public String showPage(Model model,HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser"); 
         model.addAttribute("user", user);
-        return "make-reservation"
-        ;
+        return "make-reservation";
     }
     @PostMapping("/search-reservation")
     public String searchRoom(@RequestParam double minPrice,

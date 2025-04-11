@@ -6,14 +6,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.example.hotel.interceptor.LoginInterceptor;
 
-
+@Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor())
                 .addPathPatterns("/**") // 攔所有頁面
-                .excludePathPatterns(""); // 排除登入、註冊頁面
+                .excludePathPatterns("/login","/logout","/register","/dashboard"); // 排除登入、註冊頁面
     }
 }
 
