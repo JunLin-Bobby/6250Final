@@ -42,7 +42,14 @@ public class LoginController {
         }
 
         session.setAttribute("loggedInUser", user);
-        return "redirect:/dashbroad";
+        return "redirect:/dashboard";
     }
-    
+
+    @GetMapping("/dashboard")
+    public String showDashboard(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("loggedInUser"); // 假設你把登入使用者放在 session 裡
+        model.addAttribute("user", user);
+        return "dashboard";
+    }
+
 }

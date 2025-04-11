@@ -6,11 +6,11 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import com.example.hotel.dto.LoginForm;
 import com.example.hotel.hoteldemo.pojo.User;
-@Transactional
+
 @Repository
 public class UserDAO {
     @Autowired

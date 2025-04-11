@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #2c3e50;
+      padding: 1rem 2rem;
+      color: white;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+
+    .user-info {
+      font-weight: bold;
+    }
+
+    .main {
+      padding: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="nav-links">
+      <a th:href="@{/my-reservation}">My Reservation</a>
+      <a th:href="@{/booking}">Make Reservation</a>
+    </div>
+    <div class="user-info">
+      Welcome, <span th:text="${user.firstName}">User</span>
+    </div>
+  </div>
+
+  <div class="main">
+    <h1>Welcome to the Dashboard</h1>
+    <p>This is the main content area.</p>
+  </div>
+</body>
+</html>

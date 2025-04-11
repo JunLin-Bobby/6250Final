@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
-import com.example.hotel.hoteldemo.pojo.User;
 
+import com.example.hotel.hoteldemo.pojo.*;
 import java.util.Properties;
 
 @Configuration
@@ -34,7 +34,9 @@ public class HibernateConfig {
                 .build();
 
         return new MetadataSources(serviceRegistry)
-                .addAnnotatedClass(User.class) 
+                .addAnnotatedClass(User.class)
+                .addAnnotatedClass(Room.class)
+                .addAnnotatedClass(Reservation.class)
                 .buildMetadata()
                 .buildSessionFactory();
     }

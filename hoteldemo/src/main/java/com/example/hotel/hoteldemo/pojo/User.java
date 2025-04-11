@@ -1,10 +1,15 @@
 package com.example.hotel.hoteldemo.pojo;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -12,8 +17,8 @@ import jakarta.persistence.Table;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    
+    private int userID;
+
     @Column(name = "firstname", nullable = false, length = 50)
     private String firstName;
     
@@ -29,15 +34,18 @@ public class User {
     @Column(name = "phone_number", nullable = false, length = 50)
     private String phoneNumber;
     
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Reservation> reservations;
+    
 
     public User() {}
     
-    public int getId() {
-        return id;
+    public int getUserID() {
+        return userID;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 
     public String getFirstName() {
@@ -79,4 +87,13 @@ public class User {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
 }
