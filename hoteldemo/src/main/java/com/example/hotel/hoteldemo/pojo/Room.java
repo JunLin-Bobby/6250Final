@@ -2,7 +2,7 @@ package com.example.hotel.hoteldemo.pojo;
 
 import java.util.List;
 
-import jakarta.annotation.Generated;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

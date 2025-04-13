@@ -1,6 +1,7 @@
 package com.example.hotel.hoteldemo.dao;
 
-import java.util.Date;
+import java.time.LocalDate;
+
 import java.util.List;
 
 import org.hibernate.Session;
@@ -33,7 +34,7 @@ public class RoomDAO {
     }
 
     public List<Room> searchRooms(double minPrice, double maxPrice, int capacity,
-                              Date checkIn, Date checkOut) {
+                                LocalDate checkIn, LocalDate checkOut) {
     Session session = sessionFactory.openSession();
     try {
         String hql = """
@@ -61,8 +62,23 @@ public class RoomDAO {
         throw e;
     }finally {
         session.close();
+        }
     }
-}
+    
+    public Room findByRoomID(int roomID){
+        Session session = sessionFactory.openSession();
+        Room room = null;
+        try{
+            return session.get(Room.class,roomID);
+        }catch(Exception e){
+            System.out.println(this.getClass().getName()+" Error (findByRoomID)");
+            System.out.println(e.getMessage());
+        }finally{
+            session.close();
+        }
+        return room;
+    }
+
 
 
 }

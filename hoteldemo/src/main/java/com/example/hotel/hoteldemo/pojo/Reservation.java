@@ -1,6 +1,7 @@
 package com.example.hotel.hoteldemo.pojo;
 
-import java.util.Date;
+import java.time.LocalDate;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,8 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name="reservation")
@@ -31,55 +30,77 @@ public class Reservation {
     private Room room;
 
     @Column(name = "check_in_date", nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date checkInDate;
+    private LocalDate checkInDate;
 
     @Column(name = "check_out_date", nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date checkOutDate;
+    private LocalDate checkOutDate;
 
-    public User getUser() {
-        return user;
-    }
+    @Column(name = "contact_firstname")
+    private String contactFirstName;
+    @Column(name = "contact_lastname")
+    private String contactLastName;
+    @Column(name = "contact_number")
+    private String contactPhoneNumber;
+    @Column(name = "total_Amount")
+    private double totalAmount;
 
-    public void setUser(User user) {
-        this.user = user;
-    }
 
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoomI(Room room) {
-        this.room = room;
-    }
-
+    
     public int getReservationID() {
         return reservationID;
     }
-
     public void setReservationID(int reservationID) {
         this.reservationID = reservationID;
     }
-
-
-
-    public Date getCheckInDate() {
+    public User getUser() {
+        return user;
+    }
+    public void setUser(User user) {
+        this.user = user;
+    }
+    public Room getRoom() {
+        return room;
+    }
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+    public LocalDate getCheckInDate() {
         return checkInDate;
     }
-
-    public void setCheckInDate(Date checkInDate) {
+    public void setCheckInDate(LocalDate checkInDate) {
         this.checkInDate = checkInDate;
     }
-
-    public Date getCheckOutDate() {
+    public LocalDate getCheckOutDate() {
         return checkOutDate;
     }
-
-    public void setCheckOutDate(Date checkOutDate) {
+    public void setCheckOutDate(LocalDate checkOutDate) {
         this.checkOutDate = checkOutDate;
     }
-
+    public String getContactFirstName() {
+        return contactFirstName;
+    }
+    public void setContactFirstName(String contactFirstName) {
+        this.contactFirstName = contactFirstName;
+    }
+    public String getContactLastName() {
+        return contactLastName;
+    }
+    public void setContactLastName(String contactLastName) {
+        this.contactLastName = contactLastName;
+    }
+    public String getContactPhoneNumber() {
+        return contactPhoneNumber;
+    }
+    public void setContactPhoneNumber(String contactPhoneNumber) {
+        this.contactPhoneNumber = contactPhoneNumber;
+    }
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+    
 
 
 }

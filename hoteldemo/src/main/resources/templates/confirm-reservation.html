@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Confirm Reservation</title>
+  <style>
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #2c3e50;
+      padding: 1rem 2rem;
+      color: white;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 3rem auto;
+      display: flex;
+      gap: 2rem;
+      font-family: Arial, sans-serif;
+    }
+
+    .contact-form, .room-summary {
+      flex: 1;
+      padding: 2rem;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      padding: 0.6rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      padding: 0.7rem 2rem;
+      font-weight: bold;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin: 0.5rem 0;
+    }
+  </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-links">
+          <a th:href="@{/my-reservation}" th:if="${user != null}">My Reservation</a>
+          <a th:href="@{/booking}" th:if="${user != null}">Make Reservation</a>
+        </div>
+      
+        <div class="user-info">
+          <span th:if="${user != null}">
+            Welcome, <span th:text="${user.firstName}">User</span> |
+            <a th:href="@{/logout}" style="color: white; text-decoration: underline;">Logout</a>
+          </span>
+          <span th:if="${user == null}">
+            <a th:href="@{/login}" style="color: white; text-decoration: underline;">Login</a>
+          </span>
+        </div>
+    </div>
+<div class="container">
+  
+  <!-- left side - contact info -->
+  <form th:action="@{/review-reservation}" method="post" class="contact-form">
+    <h2>Contact Information</h2>
+    <input type="text" name="contactFirstName" placeholder="First Name" required>
+    <input type="text" name="contactLastName" placeholder="Last Name" required>
+    <input type="text" name="contactPhoneNumber" placeholder="Phone Number" required>
+
+    <!-- hidden input values -->
+    <input type="hidden" name="roomID" th:value="${room.roomID}" />
+    <input type="hidden" name="checkinDate" th:value="${#temporals.format(checkinDate, 'yyyy-MM-dd')}" />
+    <input type="hidden" name="checkoutDate" th:value="${#temporals.format(checkoutDate, 'yyyy-MM-dd')}" />
+    <input type="hidden" name="totalAmount" th:value="${totalAmount}" />
+
+    <button type="submit">Continue</button>
+  </form>
+
+  <!-- right side - room information -->
+  <div class="room-summary">
+    <h2>Room Summary</h2>
+    <p><strong>Room Number:</strong> <span th:text="${room.roomNumber}"></span></p>
+    <p><strong>Capacity:</strong> <span th:text="${room.capacity}"></span> Person(s)</p>
+    <p><strong>Price per Night:</strong> $<span th:text="${room.pricePerNight}"></span></p>
+    <p><strong>Check-in:</strong>  <span th:text="${#temporals.format(checkinDate, 'MM/dd/yyyy')}"></span></p>
+    <p><strong>Check-out:</strong> <span th:text="${#temporals.format(checkoutDate, 'MM/dd/yyyy')}"></span></p>
+    <p><strong>Total Amount:</strong> $<span th:text="${totalAmount}"></span></p>
+  </div>
+
+</div>
+
+</body>
+</html>

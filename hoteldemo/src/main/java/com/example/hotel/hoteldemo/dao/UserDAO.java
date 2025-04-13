@@ -24,7 +24,6 @@ public class UserDAO {
         try{
             session.beginTransaction();
             session.persist(user);
-            System.out.println("save User done.");
             session.getTransaction().commit();
         }catch(Exception e){
             session.getTransaction().rollback();
@@ -46,7 +45,8 @@ public class UserDAO {
             if (session.getTransaction() != null) {
                 session.getTransaction().rollback();
             }
-            System.out.println(UserDAO.class.getName() + " Error");
+            
+            System.out.println(this.getClass().getName() + " Error - findByEmail");
             throw e;
         }finally{
             session.close();

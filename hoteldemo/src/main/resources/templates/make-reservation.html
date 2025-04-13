@@ -97,29 +97,30 @@
 
 <!-- Reservation UI -->
 <form th:action="@{/search-reservation}" method="post" class="reservation-container">
-  <input type="date" name="checkinDate" required />
-  <input type="date" name="checkoutDate" required />
-
-  <input type="number" name="minPrice" placeholder="Min Price" min="0" />
-  <input type="number" name="maxPrice" placeholder="Max Price" min="0" />
-
-  <select name="roomType" required>
-    <option value="">Select Room Type</option>
-    <option value="1">1-Person Room</option>
-    <option value="2">2-Person Room</option>
-    <option value="3">3-Person Room</option>
-    <option value="4">4-Person Room</option>
-  </select>
+  <input type="date" name="checkinDate" th:value="${checkinDate}" required />
+  <input type="date" name="checkoutDate" th:value="${checkoutDate}" required />
+  <input type="number" name="minPrice" th:value="${minPrice}" placeholder="Min Price" min="0" />
+  <input type="number" name="maxPrice" th:value="${maxPrice}" placeholder="Max Price" min="0" />
+<select name="roomType" required>
+  <option value="">Select Room Type</option>
+  <option value="1" th:selected="${roomType == 1}">1-Person Room</option>
+  <option value="2" th:selected="${roomType == 2}">2-Person Room</option>
+  <option value="3" th:selected="${roomType == 3}">3-Person Room</option>
+  <option value="4" th:selected="${roomType == 4}">4-Person Room</option>
+</select>
 
   <button type="submit">Search</button>
 
 </form>
 <!-- Result Section -->
 <div th:if="${rooms != null}" style="text-align: center; margin-top: 2rem;">
+ 
   <h2>Available Rooms</h2>
   
-  <form th:action="@{/book-room}" method="post" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 1.5rem;">
-    
+  <form th:action="@{/confirm-reservation}" method="post" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 1.5rem;">
+    <input type="hidden" name="checkinDate" th:value="${#temporals.format(checkinDate, 'yyyy-MM-dd')}" />
+    <input type="hidden" name="checkoutDate" th:value="${#temporals.format(checkoutDate, 'yyyy-MM-dd')}" />
+
     <div th:each="room : ${rooms}" style="border: 1px solid #ccc; border-radius: 8px; padding: 1rem; width: 250px;">
       <label style="display: block; cursor: pointer;">
         <input type="radio" name="roomID" th:value="${room.roomID}" required style="margin-bottom: 0.5rem;" />
