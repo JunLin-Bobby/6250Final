@@ -1,4 +1,4 @@
-package com.example.hotel.interceptor;
+package com.example.hotel.hoteldemo.interceptor;
 
 import org.springframework.web.servlet.HandlerInterceptor;
 

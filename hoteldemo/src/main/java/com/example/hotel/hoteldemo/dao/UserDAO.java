@@ -7,8 +7,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-
-import com.example.hotel.dto.LoginForm;
+import com.example.hotel.hoteldemo.dto.LoginForm;
 import com.example.hotel.hoteldemo.pojo.User;
 
 @Repository
