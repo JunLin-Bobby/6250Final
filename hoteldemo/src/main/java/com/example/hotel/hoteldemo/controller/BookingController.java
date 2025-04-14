@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import com.example.hotel.hoteldemo.dao.ReservationDAO;
 import com.example.hotel.hoteldemo.dao.RoomDAO;
 import com.example.hotel.hoteldemo.pojo.Reservation;
+import com.example.hotel.hoteldemo.pojo.ReservationStatus;
 import com.example.hotel.hoteldemo.pojo.Room;
 import com.example.hotel.hoteldemo.pojo.User;
 
@@ -56,7 +57,7 @@ public class BookingController {
         model.addAttribute("checkoutDate", checkoutDate);
        
         
-        return "make-reservation"; // 回到原頁面並顯示結果
+        return "make-reservation";
     }
 
     @PostMapping("/confirm-reservation")
@@ -110,7 +111,7 @@ public String finalizeReservation(@RequestParam int roomID,
                                   HttpSession session,
                                   Model model) {
 
-    // 抓登入中的使用者
+    
     User user = (User) session.getAttribute("loggedInUser");
     Room room = roomDAO.findByRoomID(roomID);
 
@@ -123,8 +124,10 @@ public String finalizeReservation(@RequestParam int roomID,
     reservation.setContactLastName(contactLastName);
     reservation.setContactPhoneNumber(contactPhoneNumber);
     reservation.setTotalAmount(totalAmount);
+    reservation.setStatus(ReservationStatus.CREATED);
 
-    // 儲存 reservation（你可以有 reservationDAO.save(...)）
+
+    
     reservationDAO.saveReservation(reservation);
 
     model.addAttribute("user", user);
@@ -132,6 +135,7 @@ public String finalizeReservation(@RequestParam int roomID,
 
     return "dashboard"; // 接下來 Step 4 我幫你做 success 頁面
 }
+
 
 
 }

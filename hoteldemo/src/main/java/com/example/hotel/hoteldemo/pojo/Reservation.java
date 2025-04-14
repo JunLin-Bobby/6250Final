@@ -5,6 +5,8 @@ import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -44,7 +46,10 @@ public class Reservation {
     @Column(name = "total_Amount")
     private double totalAmount;
 
-
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private ReservationStatus status;
+    
     
     public int getReservationID() {
         return reservationID;
@@ -100,7 +105,12 @@ public class Reservation {
     public void setTotalAmount(double totalAmount) {
         this.totalAmount = totalAmount;
     }
-    
+    public ReservationStatus getStatus() {
+        return status;
+    }
+    public void setStatus(ReservationStatus status) {
+        this.status = status;
+    }
 
 
 }

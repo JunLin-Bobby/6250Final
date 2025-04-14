@@ -60,7 +60,7 @@
     <p><strong>Room Number:</strong> <span th:text="${room.roomNumber}"></span></p>
     <p><strong>Capacity:</strong> <span th:text="${room.capacity}"></span> person(s)</p>
     <p><strong>Price per Night:</strong> $<span th:text="${room.pricePerNight}"></span></p>
-    <p><strong>Check-in:</strong> <span th:text="${#temporals.format(checkinDate, 'MM/dd/yyyy')}"></span>/p>
+    <p><strong>Check-in:</strong> <span th:text="${#temporals.format(checkinDate, 'MM/dd/yyyy')}"></span></p>
     <p><strong>Check-out:</strong> <span th:text="${#temporals.format(checkoutDate, 'MM/dd/yyyy')}"></span></p>
     <p><strong>Total Amount:</strong> $<span th:text="${totalAmount}"></span></p>
   </div>

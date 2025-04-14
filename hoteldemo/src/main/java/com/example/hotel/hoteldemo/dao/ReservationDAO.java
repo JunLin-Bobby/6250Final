@@ -1,11 +1,16 @@
 package com.example.hotel.hoteldemo.dao;
 
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.example.hotel.hoteldemo.pojo.Reservation;
+import com.example.hotel.hoteldemo.pojo.User;
+
+import org.hibernate.query.Query;
 import org.hibernate.SessionFactory;
 
 @Repository
@@ -28,4 +33,27 @@ public class ReservationDAO {
         }
     }
 
+    public List<Reservation> findByUser(User user){
+        Session session = sessionFactory.openSession();
+        try{
+            String hql ="FROM Reservation r WHERE r.user = :user ORDER BY r.checkInDate DESC";
+            Query<Reservation> query = session.createQuery(hql, Reservation.class);
+            query.setParameter("user", user);
+            return query.getResultList();
+        }catch(Exception e){
+            System.out.println(this.getClass().getName()+" findByUser Error (ReservationDAO)");
+            throw e;
+        }finally{
+            session.close();
+        }
+    }
+    
+    public Reservation findById(int id) {
+        Session session = sessionFactory.openSession();
+        try {
+            return session.get(Reservation.class, id);
+        } finally {
+            session.close();
+        }
+    }
 }
