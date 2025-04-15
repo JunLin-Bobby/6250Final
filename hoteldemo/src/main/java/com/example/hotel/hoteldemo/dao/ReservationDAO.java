@@ -32,7 +32,7 @@ public class ReservationDAO {
             session.close();
         }
     }
-
+    //Find by user
     public List<Reservation> findByUser(User user){
         Session session = sessionFactory.openSession();
         try{
@@ -47,7 +47,7 @@ public class ReservationDAO {
             session.close();
         }
     }
-    
+    //Find by reservationid
     public Reservation findById(int id) {
         Session session = sessionFactory.openSession();
         try {
@@ -56,4 +56,19 @@ public class ReservationDAO {
             session.close();
         }
     }
+
+    public void update(Reservation reservation) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.merge(reservation);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
+    }
+    
 }

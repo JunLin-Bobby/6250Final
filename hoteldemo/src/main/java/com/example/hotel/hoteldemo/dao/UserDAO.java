@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.example.hotel.hoteldemo.dto.LoginForm;
+import com.example.hotel.hoteldemo.pojo.HotelManager;
 import com.example.hotel.hoteldemo.pojo.User;
 
 @Repository
@@ -31,6 +32,11 @@ public class UserDAO {
             session.close();
         }
     }
+    ///////////Find user by id
+    public User findById(Long id) {
+        return getSession().get(User.class, id);
+    }
+    ///////////Find user by email
     public User findByEmail(LoginForm loginForm){
         Session  session = sessionFactory.openSession();
         User user = null;
@@ -52,10 +58,33 @@ public class UserDAO {
         }
         return user;
     }
-    public User findById(Long id) {
-        return getSession().get(User.class, id);
+    ///////////Check existing email
+    public boolean existsByEmail(String email) {
+        Session session = sessionFactory.openSession();
+        try {
+            String hql = "SELECT COUNT(u) FROM User u WHERE u.email = :email";
+            Long count = session.createQuery(hql, Long.class)
+                                .setParameter("email", email)
+                                .uniqueResult();
+            return count > 0;
+        } finally {
+            session.close();
+        }
     }
-
+    ///////////Check existing phoneNumber
+    public boolean existsByPhoneNumber(String phoneNumber) {
+        Session session = sessionFactory.openSession();
+        try {
+            String hql = "SELECT COUNT(u) FROM User u WHERE u.phoneNumber = :phone";
+            Long count = session.createQuery(hql, Long.class)
+                                .setParameter("phone", phoneNumber)
+                                .uniqueResult();
+            return count > 0;
+        } finally {
+            session.close();
+        }
+    }
+    
 
     public void delete(User user) {
         getSession().remove(user);
@@ -68,4 +97,7 @@ public class UserDAO {
     private Session getSession() {
         return sessionFactory.getCurrentSession();
     }
+
+    
+
 }

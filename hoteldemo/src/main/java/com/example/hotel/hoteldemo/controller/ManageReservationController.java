@@ -1,15 +1,19 @@
 package com.example.hotel.hoteldemo.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.hotel.hoteldemo.dao.ReservationDAO;
 import com.example.hotel.hoteldemo.pojo.Reservation;
+import com.example.hotel.hoteldemo.pojo.ReservationStatus;
 import com.example.hotel.hoteldemo.pojo.User;
 
 import jakarta.servlet.http.HttpSession;
@@ -43,7 +47,22 @@ public class ManageReservationController {
     model.addAttribute("reservation", reservation);
     model.addAttribute("user", user);
     return "reservation-detail";
-}
+    }
 
-    
+    @PostMapping("/cancel-reservation")
+    public String cancelReservation(@RequestParam int id, HttpSession session, RedirectAttributes redirectAttributes) {
+    User user = (User) session.getAttribute("loggedInUser");
+    Reservation reservation = reservationDAO.findById(id);
+
+    if (reservation != null && reservation.getUser().getUserID() == user.getUserID()) {
+        if (reservation.getCheckInDate().isAfter(LocalDate.now())) {
+            reservation.setStatus(ReservationStatus.CANCELLED);
+            reservationDAO.update(reservation);
+            redirectAttributes.addFlashAttribute("message", "Reservation cancelled successfully.");
+        }
+    }
+
+    return "redirect:/reservation-detail?id="+id;
+    }
+
 }

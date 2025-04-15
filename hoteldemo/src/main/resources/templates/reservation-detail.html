@@ -80,9 +80,10 @@
           </span>
         </div>
     </div> 
+
   <div class="container">
     <h2>Reservation Detail</h2>
-
+    
     <div class="section">
       <h3>Room Information</h3>
       <p><strong>Room Number:</strong> <span th:text="${reservation.room.roomNumber}"></span></p>
@@ -113,9 +114,24 @@
         <span th:text="${reservation.contactLastName}"></span>
       </p>
       <p><strong>Phone:</strong> <span th:text="${reservation.contactPhoneNumber}"></span></p>
+      <p th:if="${message}" style="color: green;" th:text="${message}"></p>
+      <p>You can only cancel your reservation before the Checkin date.</p>
     </div>
-
+    <!-- Cancel Reservation -->
+    <form th:action="@{/cancel-reservation}" method="post"
+    th:if="${reservation.checkInDate > T(java.time.LocalDate).now() and reservation.status.name()!='CANCELLED'}">
+    <input type="hidden" name="id" th:value="${reservation.reservationID}" />
+    <button type="submit"
+        onclick="return confirm('Are you sure you want to cancel this reservation?');"
+        style="margin-top: 1rem; background-color: red; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 6px;">
+        Cancel Reservation
+    </button>
+    </form>
+    
     <a th:href="@{/my-reservation}" class="back-link">&larr; Back to My Reservations</a>
   </div>
+  
+  
+
 </body>
 </html>

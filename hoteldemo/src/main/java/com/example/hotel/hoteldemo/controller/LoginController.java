@@ -40,7 +40,7 @@ public class LoginController {
         User user = userDAO.findByEmail(loginForm);
         if (user == null || !user.getPassword().equals(loginForm.getPassword())) {
             model.addAttribute("loginError", "Error email or password");
-            return "loginPage"; // ❌ 自訂錯誤：帳密不符
+            return "loginPage"; 
         }
 
         session.setAttribute("loggedInUser", user);
@@ -55,7 +55,7 @@ public class LoginController {
 
     @GetMapping("/dashboard")
     public String showDashboard(Model model, HttpSession session) {
-        User user = (User) session.getAttribute("loggedInUser"); // 假設你把登入使用者放在 session 裡
+        User user = (User) session.getAttribute("loggedInUser"); 
         model.addAttribute("user", user);
         return "dashboard";
     }

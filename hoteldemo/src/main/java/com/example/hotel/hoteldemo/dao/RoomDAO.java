@@ -32,7 +32,7 @@ public class RoomDAO {
             session.close();
         }
     }
-
+    //filter for searching room
     public List<Room> searchRooms(double minPrice, double maxPrice, int capacity,
                                 LocalDate checkIn, LocalDate checkOut) {
     Session session = sessionFactory.openSession();
@@ -64,7 +64,7 @@ public class RoomDAO {
         session.close();
         }
     }
-    
+    //find by roomid
     public Room findByRoomID(int roomID){
         Session session = sessionFactory.openSession();
         Room room = null;

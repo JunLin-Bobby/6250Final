@@ -133,7 +133,7 @@ public String finalizeReservation(@RequestParam int roomID,
     model.addAttribute("user", user);
     model.addAttribute("reservation", reservation);
 
-    return "dashboard"; // 接下來 Step 4 我幫你做 success 頁面
+    return "dashboard"; 
 }
 
 

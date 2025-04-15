@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public class LoginForm {
 
-    @NotBlank(message = "Email can not be blank!")
+    @NotBlank(message = "Email or username can not be blank!")
     private String email;
 
     @NotBlank(message = "Password can not be blank!")

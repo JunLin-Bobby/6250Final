@@ -113,7 +113,7 @@
 
 </form>
 <!-- Result Section -->
-<div th:if="${rooms != null}" style="text-align: center; margin-top: 2rem;">
+<div th:if="${rooms != null and !rooms.isEmpty()} " style="text-align: center; margin-top: 2rem;">
  
   <h2>Available Rooms</h2>
   
@@ -133,7 +133,7 @@
     </div>
     
     <div style="width: 100%; text-align: center; margin-top: 1rem;">
-      <button type="submit" style="padding: 0.7rem 2rem; font-weight: bold;">Reserve</button>
+      <button  type="submit" style="padding: 0.7rem 2rem; font-weight: bold;">Reserve</button>
     </div>
     
   </form>

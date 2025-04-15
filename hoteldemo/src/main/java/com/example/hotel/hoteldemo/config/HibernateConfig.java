@@ -37,6 +37,7 @@ public class HibernateConfig {
                 .addAnnotatedClass(User.class)
                 .addAnnotatedClass(Room.class)
                 .addAnnotatedClass(Reservation.class)
+                .addAnnotatedClass(HotelManager.class)
                 .buildMetadata()
                 .buildSessionFactory();
     }
