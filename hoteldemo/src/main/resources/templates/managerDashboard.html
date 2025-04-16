@@ -1,11 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <title>Manager Dashboard</title>
+  <style>
+    body { font-family: Arial; padding: 2rem; background-color: #f5f5f5; }
+    .navbar { display: flex; justify-content: space-between; background-color: #2c3e50; padding: 1rem; color: white; }
+    .table-container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { padding: 0.8rem; border: 1px solid #ccc; text-align: center; }
+    th { background-color: #eee; }
+    .cancelled { color: red; font-weight: bold; }
+    .created { color: black; }
+    .filter-form { margin-bottom: 1rem; }
+    .filter-form input { padding: 0.4rem; margin-right: 0.5rem; }
+  </style>
 </head>
 <body>
-    
+
+  <div class="navbar">
+    <h2>Manager Dashboard</h2>
+    <a th:href="@{/logout}" style="color:white; text-decoration: underline;">Logout</a>
+  </div>
+
+  <div class="table-container">
+    <form th:action="@{/system_admin/dashboard}" method="get" class="filter-form">
+      <label>From: <input type="date" name="startDate" th:value="${startDate}" /></label>
+      <label>To: <input type="date" name="endDate" th:value="${endDate}" /></label>
+      <button type="submit">Filter</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Reservation ID</th>
+          <th>Room</th>
+          <th>Check-in</th>
+          <th>Check-out</th>
+          <th>Total Amount</th>
+          <th>Status</th>
+          <th>Detail</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:if="${reservations == null or #lists.isEmpty(reservations)}">
+            <td colspan="7" style="text-align: center; color: #888;">No reservations found. Please adjust the filter.</td>
+        </tr>
+        <tr th:each="res : ${reservations}">
+          <td th:text="${res.reservationID}"></td>
+          <td th:text="${res.room.roomNumber}"></td>
+          <td th:text="${#temporals.format(res.checkInDate, 'MM/dd/yyyy')}"></td>
+          <td th:text="${#temporals.format(res.checkOutDate, 'MM/dd/yyyy')}"></td>
+          <td th:text="${res.totalAmount}"></td>
+          <td>
+            <span th:classappend="${res.status.name() == 'CANCELLED'} ? 'cancelled' : 'created'"
+                  th:text="${res.status.name()}"></span>
+          </td>
+          <td><a th:href="@{/reservation-detail(id=${res.reservationID})}">View Detail</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
 </body>
 </html>

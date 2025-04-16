@@ -1,6 +1,7 @@
 package com.example.hotel.hoteldemo.dao;
 
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -28,6 +29,28 @@ public class ReservationDAO {
             System.out.println(this.getClass().getName() + " Error - saveReservation");
             session.getTransaction().rollback();
             throw e;
+        }finally{
+            session.close();
+        }
+    }
+    //Finf all reservation
+    public List<Reservation> findAll(){
+        Session session = sessionFactory.openSession();
+        try{
+            String hql = "FROM Reservation";
+            return session.createQuery(hql, Reservation.class).getResultList();
+        }finally{
+            session.close();
+        }
+    }
+    //Find by RangeDATE
+    public List<Reservation> findByDateRange(LocalDate start, LocalDate end){
+        Session session = sessionFactory.openSession();
+        try{
+            String hql = "FROM Reservation r where r.checkInDate >= : start AND r.checkInDate <= :end";
+            return session.createQuery(hql, Reservation.class)
+                   .setParameter("start", start)
+                   .setParameter("end", end).getResultList();
         }finally{
             session.close();
         }
@@ -70,5 +93,7 @@ public class ReservationDAO {
             session.close();
         }
     }
+
+
     
 }
