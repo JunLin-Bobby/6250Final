@@ -2,6 +2,8 @@ package com.example.hotel.hoteldemo.dao;
 
 
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,16 @@ public class UserDAO {
         }catch(Exception e){
             session.getTransaction().rollback();
             throw e;
+        }finally{
+            session.close();
+        }
+    }
+    ///////////Find all users
+    public List<User> findAll(){
+        Session session = sessionFactory.openSession();
+        try{
+            String hql = "FROM User";
+            return session.createQuery(hql, User.class).getResultList();
         }finally{
             session.close();
         }

@@ -5,7 +5,10 @@
   <title>Manager Dashboard</title>
   <style>
     body { font-family: Arial; padding: 2rem; background-color: #f5f5f5; }
-    .navbar { display: flex; justify-content: space-between; background-color: #2c3e50; padding: 1rem; color: white; }
+    .navbar { display: flex; justify-content: space-between; align-items: center; background-color: #2c3e50; padding: 1rem; color: white; }
+    .nav-actions { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-actions a { color: white; text-decoration: none; font-weight: bold; }
+    .nav-actions a:hover { text-decoration: underline; }
     .table-container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
     table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
     th, td { padding: 0.8rem; border: 1px solid #ccc; text-align: center; }
@@ -20,7 +23,11 @@
 
   <div class="navbar">
     <h2>Manager Dashboard</h2>
-    <a th:href="@{/logout}" style="color:white; text-decoration: underline;">Logout</a>
+    <div class="nav-actions">
+      <a th:href="@{/system_admin/users}">View All Users</a>
+      <a th:href="@{/system_admin/rooms}">View Rooms</a>
+      <a th:href="@{/logout}" style="text-decoration: underline;">Logout</a>
+    </div>
   </div>
 
   <div class="table-container">

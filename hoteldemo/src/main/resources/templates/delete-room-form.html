@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Delete Room</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f8f8f8; padding: 2rem; }
+    .container { max-width: 600px; margin: auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h2 { text-align: center; margin-bottom: 1.5rem; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { padding: 0.75rem; text-align: center; border: 1px solid #ccc; }
+    th { background-color: #eee; }
+    form { display: inline; }
+    .error { color: red; text-align: center; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Delete Room</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Room ID</th>
+          <th>Room Number</th>
+          <th>Capacity</th>
+          <th>Price</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="room : ${rooms}">
+          <td th:text="${room.roomID}"></td>
+          <td th:text="${room.roomNumber}"></td>
+          <td th:text="${room.capacity}"></td>
+          <td th:text="${room.pricePerNight}"></td>
+          <td>
+            <form th:action="@{/system_admin/rooms/delete}" method="post">
+              <input type="hidden" name="roomID" th:value="${room.roomID}" />
+              <button type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+  </div>
+</body>
+</html>

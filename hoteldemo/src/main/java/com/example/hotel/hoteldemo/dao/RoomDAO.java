@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -28,6 +29,15 @@ public class RoomDAO {
             System.out.println(UserDAO.class.getName() + " Save Room Error");
             session.getTransaction().rollback();
             throw e;
+        }finally{
+            session.close();
+        }
+    }
+    public List<Room> findAll(){
+        Session session = sessionFactory.openSession();
+        try{
+            String hql = "FROM Room";
+            return session.createQuery(hql,Room.class).getResultList();
         }finally{
             session.close();
         }
@@ -67,18 +77,36 @@ public class RoomDAO {
     //find by roomid
     public Room findByRoomID(int roomID){
         Session session = sessionFactory.openSession();
-        Room room = null;
+        
         try{
-            return session.get(Room.class,roomID);
+           Room room = session.get(Room.class,roomID);
+            if(room!=null){
+                Hibernate.initialize(room.getReservations());
+            }
+            return room;
         }catch(Exception e){
             System.out.println(this.getClass().getName()+" Error (findByRoomID)");
             System.out.println(e.getMessage());
         }finally{
             session.close();
         }
-        return room;
+        return null;
     }
 
-
+    //delete room
+    public void delete(Room room) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.remove(room); 
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
+    }
+    
 
 }
