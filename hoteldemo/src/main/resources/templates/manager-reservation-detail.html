@@ -34,6 +34,14 @@
   </div>
   <div class="container">
     <h2>Reservation Detail</h2>
+    
+    <div class="section">
+      <h3>User Info</h3>
+      <p><strong>User ID:</strong> <span th:text="${reservation.user.userID}"></span></p>
+      <p><strong>Name:</strong> <span th:text="${reservation.user.firstName}"></span> <span th:text="${reservation.user.lastName}"></span></p>
+      <p><strong>Email:</strong> <span th:text="${reservation.user.email}"></span></p>
+      <p><strong>Phone:</strong> <span th:text="${reservation.user.phoneNumber}"></span></p>
+    </div>
 
     <div class="section">
       <h3>Room Info</h3>
@@ -49,7 +57,7 @@
       <p><strong>Check-out:</strong> <span th:text="${#temporals.format(reservation.checkOutDate, 'MM/dd/yyyy')}"></span></p>
       <p><strong>Total Amount:</strong> $<span th:text="${reservation.totalAmount}"></span></p>
     </div>
-
+    
     <div class="section">
       <h3>Contact Info</h3>
       <p><strong>Name:</strong> <span th:text="${reservation.contactFirstName}"></span> <span th:text="${reservation.contactLastName}"></span></p>
