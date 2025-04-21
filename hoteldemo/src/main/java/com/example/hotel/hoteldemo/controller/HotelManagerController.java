@@ -20,6 +20,7 @@ import com.example.hotel.hoteldemo.dto.LoginForm;
 import com.example.hotel.hoteldemo.pojo.HotelManager;
 import com.example.hotel.hoteldemo.pojo.Reservation;
 
+
 import jakarta.servlet.http.HttpSession;
 
 
@@ -68,17 +69,18 @@ public class HotelManagerController {
     public String showDashboard(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
                             Model model) {
-    List<Reservation> reservations;
-    if (startDate != null && endDate != null) {
-        reservations = reservationDAO.findByDateRange(startDate, endDate);
-    } else {
-        reservations = reservationDAO.findAll();
+        List<Reservation> reservations;
+        if (startDate != null && endDate != null) {
+            reservations = reservationDAO.findByDateRange(startDate, endDate);
+        } else {
+            reservations = reservationDAO.findAll();
+        }
+        model.addAttribute("reservations", reservations);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        return "ManagerDashboard";
     }
-    model.addAttribute("reservations", reservations);
-    model.addAttribute("startDate", startDate);
-    model.addAttribute("endDate", endDate);
-    return "ManagerDashboard";
-}
-
+    
+    
 
 }

@@ -56,6 +56,7 @@ public class RoomDAO {
                   SELECT res.room.roomID
                   FROM Reservation res
                   WHERE (:checkOut > res.checkInDate AND :checkIn < res.checkOutDate)
+                  AND res.status = 'CREATED'
               )
             """;
 

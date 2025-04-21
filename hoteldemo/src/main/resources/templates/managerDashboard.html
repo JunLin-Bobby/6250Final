@@ -63,7 +63,7 @@
             <span th:classappend="${res.status.name() == 'CANCELLED'} ? 'cancelled' : 'created'"
                   th:text="${res.status.name()}"></span>
           </td>
-          <td><a th:href="@{/reservation-detail(id=${res.reservationID})}">View Detail</a></td>
+          <td><a th:href="@{/system_admin/reservation-detail(id=${res.reservationID})}">View Detail</a></td>
         </tr>
       </tbody>
     </table>

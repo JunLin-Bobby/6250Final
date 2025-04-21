@@ -1,10 +1,10 @@
 package com.example.hotel.hoteldemo.controller;
 
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,17 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.hotel.hoteldemo.dao.ManagerDAO;
 import com.example.hotel.hoteldemo.dao.ReservationDAO;
 import com.example.hotel.hoteldemo.dao.RoomDAO;
 import com.example.hotel.hoteldemo.dao.UserDAO;
-import com.example.hotel.hoteldemo.dto.LoginForm;
-import com.example.hotel.hoteldemo.pojo.HotelManager;
 import com.example.hotel.hoteldemo.pojo.Reservation;
+import com.example.hotel.hoteldemo.pojo.ReservationStatus;
 import com.example.hotel.hoteldemo.pojo.Room;
 import com.example.hotel.hoteldemo.pojo.User;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 @Controller
 @RequestMapping("/system_admin")
@@ -34,6 +31,8 @@ public class ManagerBehaviorController {
     UserDAO userDAO;
     @Autowired
     RoomDAO roomDAO;
+    @Autowired
+    ReservationDAO reservationDAO;
     @GetMapping("/users")
     public String viewAllUsers(Model model) {
         List<User> users = userDAO.findAll(); 
@@ -83,4 +82,27 @@ public class ManagerBehaviorController {
         roomDAO.delete(room);
         return "redirect:/system_admin/rooms";
     }
+
+    @GetMapping("/reservation-detail")
+    public String showReservationDetail(@RequestParam int id, Model model) {
+        Reservation reservation = reservationDAO.findById(id);
+        if (reservation == null) {
+            return "redirect:/system_admin/dashboard";
+        }
+        model.addAttribute("reservation", reservation);
+        model.addAttribute("isCancelable", reservation.getCheckOutDate().isAfter(LocalDate.now()));
+        return "manager-reservation-detail";
+    }
+
+    @PostMapping("/reservation/cancel")
+    public String cancelReservation(@RequestParam int id, RedirectAttributes redirectAttributes) {
+        Reservation reservation = reservationDAO.findById(id);
+        if (reservation != null && reservation.getCheckOutDate().isAfter(LocalDate.now())) {
+            reservation.setStatus(ReservationStatus.CANCELLED);
+            reservationDAO.update(reservation);
+            redirectAttributes.addFlashAttribute("message", "Reservation successfully cancelled.");
+        }
+        return "redirect:/system_admin/reservation-detail?id=" + id;
+    }
+
 }

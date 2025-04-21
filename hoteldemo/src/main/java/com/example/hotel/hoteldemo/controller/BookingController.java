@@ -15,6 +15,7 @@ import com.example.hotel.hoteldemo.pojo.Reservation;
 import com.example.hotel.hoteldemo.pojo.ReservationStatus;
 import com.example.hotel.hoteldemo.pojo.Room;
 import com.example.hotel.hoteldemo.pojo.User;
+import com.example.hotel.hoteldemo.validator.SearchValidator;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -31,8 +32,10 @@ public class BookingController {
     RoomDAO roomDAO;
     @Autowired
     ReservationDAO reservationDAO;
+    @Autowired
+    private SearchValidator searchValidator;
 
-    @GetMapping("/booking")
+    @GetMapping("/search-reservation")
     public String showPage(Model model,HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser"); 
         model.addAttribute("user", user);
@@ -47,14 +50,20 @@ public class BookingController {
                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkoutDate,
                          Model model,
                          HttpSession session) {
-        List<Room> rooms = roomDAO.searchRooms(minPrice, maxPrice, roomType, checkinDate, checkoutDate);
-        
-        // 將目前登入使用者加進 model（供 navbar 顯示）
+
+        searchValidator.validate(checkinDate, checkoutDate, model);                    
+        if (!model.containsAttribute("dateError")) {
+            List<Room> rooms = roomDAO.searchRooms(minPrice, maxPrice, roomType, checkinDate, checkoutDate);
+            model.addAttribute("rooms", rooms);
+        }   
+
         User user = (User) session.getAttribute("loggedInUser");
         model.addAttribute("user", user);
-        model.addAttribute("rooms", rooms);
         model.addAttribute("checkinDate", checkinDate);
         model.addAttribute("checkoutDate", checkoutDate);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("roomType", roomType);
        
         
         return "make-reservation";
@@ -65,76 +74,76 @@ public class BookingController {
                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkinDate,
                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkoutDate,
                                Model model,HttpSession session) {
-    Room room = roomDAO.findByRoomID(roomID); 
-    long nights = ChronoUnit.DAYS.between(checkinDate, checkoutDate);
-    double totalAmount = room.getPricePerNight() * nights;
-    User user = (User) session.getAttribute("loggedInUser");
-    model.addAttribute("user", user);
-    model.addAttribute("room", room);
-    model.addAttribute("checkinDate", checkinDate);
-    model.addAttribute("checkoutDate", checkoutDate);
-    model.addAttribute("totalAmount", totalAmount);
+        Room room = roomDAO.findByRoomID(roomID); 
+        long nights = ChronoUnit.DAYS.between(checkinDate, checkoutDate);
+        double totalAmount = room.getPricePerNight() * nights;
+        User user = (User) session.getAttribute("loggedInUser");
+        model.addAttribute("user", user);
+        model.addAttribute("room", room);
+        model.addAttribute("checkinDate", checkinDate);
+        model.addAttribute("checkoutDate", checkoutDate);
+        model.addAttribute("totalAmount", totalAmount);
 
-    return "confirm-reservation";
-}
+        return "confirm-reservation";
+    }
 
-@PostMapping("/review-reservation")
-public String reviewReservation(@RequestParam int roomID,
-                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkinDate,
-                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkoutDate,
-                                @RequestParam String contactFirstName,
-                                @RequestParam String contactLastName,
-                                @RequestParam String contactPhoneNumber,
-                                @RequestParam double totalAmount,
-                                Model model, HttpSession session) {
-    Room room = roomDAO.findByRoomID(roomID);
-    User user = (User) session.getAttribute("loggedInUser");
-    model.addAttribute("user", user);
-    model.addAttribute("room", room);
-    model.addAttribute("checkinDate", checkinDate);
-    model.addAttribute("checkoutDate", checkoutDate);
-    model.addAttribute("contactFirstName", contactFirstName);
-    model.addAttribute("contactLastName", contactLastName);
-    model.addAttribute("contactPhoneNumber", contactPhoneNumber);
-    model.addAttribute("totalAmount", totalAmount);
+    @PostMapping("/review-reservation")
+    public String reviewReservation(@RequestParam int roomID,
+                                    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkinDate,
+                                    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkoutDate,
+                                    @RequestParam String contactFirstName,
+                                    @RequestParam String contactLastName,
+                                    @RequestParam String contactPhoneNumber,
+                                    @RequestParam double totalAmount,
+                                    Model model, HttpSession session) {
+        Room room = roomDAO.findByRoomID(roomID);
+        User user = (User) session.getAttribute("loggedInUser");
+        model.addAttribute("user", user);
+        model.addAttribute("room", room);
+        model.addAttribute("checkinDate", checkinDate);
+        model.addAttribute("checkoutDate", checkoutDate);
+        model.addAttribute("contactFirstName", contactFirstName);
+        model.addAttribute("contactLastName", contactLastName);
+        model.addAttribute("contactPhoneNumber", contactPhoneNumber);
+        model.addAttribute("totalAmount", totalAmount);
 
-    return "review-reservation";
-}
-@PostMapping("/finalize-reservation")
-public String finalizeReservation(@RequestParam int roomID,
-                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkinDate,
-                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkoutDate,
-                                  @RequestParam String contactFirstName,
-                                  @RequestParam String contactLastName,
-                                  @RequestParam String contactPhoneNumber,
-                                  @RequestParam double totalAmount,
-                                  HttpSession session,
-                                  Model model) {
+        return "review-reservation";
+    }
+    @PostMapping("/finalize-reservation")
+    public String finalizeReservation(@RequestParam int roomID,
+                                    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkinDate,
+                                    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkoutDate,
+                                    @RequestParam String contactFirstName,
+                                    @RequestParam String contactLastName,
+                                    @RequestParam String contactPhoneNumber,
+                                    @RequestParam double totalAmount,
+                                    HttpSession session,
+                                    Model model) {
 
-    
-    User user = (User) session.getAttribute("loggedInUser");
-    Room room = roomDAO.findByRoomID(roomID);
+        
+        User user = (User) session.getAttribute("loggedInUser");
+        Room room = roomDAO.findByRoomID(roomID);
 
-    Reservation reservation = new Reservation();
-    reservation.setUser(user);
-    reservation.setRoom(room);
-    reservation.setCheckInDate(checkinDate);
-    reservation.setCheckOutDate(checkoutDate);
-    reservation.setContactFirstName(contactFirstName);
-    reservation.setContactLastName(contactLastName);
-    reservation.setContactPhoneNumber(contactPhoneNumber);
-    reservation.setTotalAmount(totalAmount);
-    reservation.setStatus(ReservationStatus.CREATED);
+        Reservation reservation = new Reservation();
+        reservation.setUser(user);
+        reservation.setRoom(room);
+        reservation.setCheckInDate(checkinDate);
+        reservation.setCheckOutDate(checkoutDate);
+        reservation.setContactFirstName(contactFirstName);
+        reservation.setContactLastName(contactLastName);
+        reservation.setContactPhoneNumber(contactPhoneNumber);
+        reservation.setTotalAmount(totalAmount);
+        reservation.setStatus(ReservationStatus.CREATED);
 
 
-    
-    reservationDAO.saveReservation(reservation);
+        
+        reservationDAO.saveReservation(reservation);
 
-    model.addAttribute("user", user);
-    model.addAttribute("reservation", reservation);
+        model.addAttribute("user", user);
+        model.addAttribute("reservation", reservation);
 
-    return "dashboard"; 
-}
+        return "dashboard"; 
+    }
 
 
 

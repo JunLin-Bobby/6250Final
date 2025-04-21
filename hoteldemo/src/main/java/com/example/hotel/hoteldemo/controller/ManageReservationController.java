@@ -23,7 +23,7 @@ import jakarta.servlet.http.HttpSession;
 public class ManageReservationController {
     @Autowired
     ReservationDAO reservationDAO;
-
+    
 
     @GetMapping("/my-reservation")
     public String showPage(Model model, HttpSession session) {
@@ -36,33 +36,33 @@ public class ManageReservationController {
 
     @GetMapping("/reservation-detail")
     public String showReservationDetail(@RequestParam int id, Model model, HttpSession session) {
-    User user = (User) session.getAttribute("loggedInUser");
-    Reservation reservation = reservationDAO.findById(id);
+        User user = (User) session.getAttribute("loggedInUser");
+        Reservation reservation = reservationDAO.findById(id);
 
-    
-    if (reservation == null || reservation.getUser().getUserID() != user.getUserID()) {
-        return "redirect:/my-reservation";
-    }
+        
+        if (reservation == null || reservation.getUser().getUserID() != user.getUserID()) {
+            return "redirect:/my-reservation";
+        }
 
-    model.addAttribute("reservation", reservation);
-    model.addAttribute("user", user);
-    return "reservation-detail";
+        model.addAttribute("reservation", reservation);
+        model.addAttribute("user", user);
+        return "reservation-detail";
     }
 
     @PostMapping("/cancel-reservation")
     public String cancelReservation(@RequestParam int id, HttpSession session, RedirectAttributes redirectAttributes) {
-    User user = (User) session.getAttribute("loggedInUser");
-    Reservation reservation = reservationDAO.findById(id);
+        User user = (User) session.getAttribute("loggedInUser");
+        Reservation reservation = reservationDAO.findById(id);
 
-    if (reservation != null && reservation.getUser().getUserID() == user.getUserID()) {
-        if (reservation.getCheckInDate().isAfter(LocalDate.now())) {
-            reservation.setStatus(ReservationStatus.CANCELLED);
-            reservationDAO.update(reservation);
-            redirectAttributes.addFlashAttribute("message", "Reservation cancelled successfully.");
+        if (reservation != null && reservation.getUser().getUserID() == user.getUserID()) {
+            if (reservation.getCheckInDate().isAfter(LocalDate.now())) {
+                reservation.setStatus(ReservationStatus.CANCELLED);
+                reservationDAO.update(reservation);
+                redirectAttributes.addFlashAttribute("message", "Reservation cancelled successfully.");
+            }
         }
-    }
 
-    return "redirect:/reservation-detail?id="+id;
+        return "redirect:/reservation-detail?id="+id;
     }
 
 }

@@ -36,7 +36,7 @@ public class HoteldemoApplication implements CommandLineRunner{
 		User user = new User();
 		user.setFirstName("Jun");
 		user.setLastName("Lin");
-		user.setPassword("123");
+		user.setPassword("password123");
 		user.setPhoneNumber("678938719");
 		user.setEmail("lin.jun1@northeastern.edu");
 		userDAO.save(user);
