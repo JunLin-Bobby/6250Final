@@ -48,6 +48,7 @@
   <div class="nav-links">
     <a th:href="@{/my-reservation}" th:if="${user != null}">My Reservation</a>
     <a th:href="@{/search-reservation}" th:if="${user != null}">Make Reservation</a>
+    <a th:href="@{/payment}" th:if="${user != null}">My payment method</a>
   </div>
 
   <div class="user-info">

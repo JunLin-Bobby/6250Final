@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -104,5 +105,32 @@ public class ManagerBehaviorController {
         }
         return "redirect:/system_admin/reservation-detail?id=" + id;
     }
+
+    @PostMapping("/reservation/update-dates")
+    public String updateReservationDates(@RequestParam int id,
+                                        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate newCheckin,
+                                        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate newCheckout,
+                                        RedirectAttributes redirectAttributes) {
+
+        Reservation reservation = reservationDAO.findById(id);
+        if (reservation == null) {
+            redirectAttributes.addFlashAttribute("error", "Reservation not found.");
+            return "redirect:/system_admin/dashboard";
+        }
+
+    
+        if (!newCheckout.isAfter(newCheckin)) {
+            redirectAttributes.addFlashAttribute("error", "Check-out date must be after check-in date.");
+            return "redirect:/system_admin/reservation-detail?id=" + id;
+        }
+
+        reservation.setCheckInDate(newCheckin);
+        reservation.setCheckOutDate(newCheckout);
+        reservationDAO.update(reservation);
+
+        redirectAttributes.addFlashAttribute("message", "Reservation dates updated successfully.");
+        return "redirect:/system_admin/reservation-detail?id=" + id;
+    }
+
 
 }

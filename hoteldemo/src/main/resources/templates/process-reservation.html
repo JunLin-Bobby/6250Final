@@ -74,6 +74,7 @@
 <body>
     <div class="navbar">
         <div class="nav-links">
+          <a th:href="@{/dashboard}" th:if="${user != null}">Dashboard</a>
           <a th:href="@{/my-reservation}" th:if="${user != null}">My Reservation</a>
           <a th:href="@{/booking}" th:if="${user != null}">Make Reservation</a>
         </div>
@@ -103,8 +104,35 @@
     <input type="hidden" name="checkoutDate" th:value="${#temporals.format(checkoutDate, 'yyyy-MM-dd')}" />
     <input type="hidden" name="totalAmount" th:value="${totalAmount}" />
 
-    <button type="submit">Continue</button>
+    <h3>Select Payment Method</h3>
+
+  <!-- 1. existing card -->
+  <label>Use existing card:</label>
+  <select name="creditCardID">
+    <option value="">-- Select a saved card --</option>
+    <option th:each="card : ${cards}"
+            th:value="${card.id}"
+            th:text="'**** **** **** ' + ${#strings.substring(card.cardNumber, 12)} + ' (Exp: ' + ${card.expireDate} + ')'">
+    </option>
+  </select>
+
+  <!-- 2. add new card optional -->
+  <div th:if="${error}" style="color:red; margin-top: 1rem;">
+    <p th:text="${error}"></p>
+  </div>
+  <p style="margin-top: 1rem;">Or enter a new card below:</p>
+  <label>Card Number (16 digits):</label>
+  <input type="text" name="newCardNumber" placeholder="Card Number" />
+
+  <label>Expire Date (MM/YY):</label>
+  <input type="text" name="newExpireDate" placeholder="MM/YY" />
+
+  <label>CVV (3 digits):</label>
+  <input type="text" name="newCVV" placeholder="CVV" />
+
+  <button type="submit">Continue</button>
   </form>
+  
 
   <!-- right side - room information -->
   <div class="room-summary">
@@ -117,7 +145,7 @@
     <p><strong>Total Amount:</strong> $<span th:text="${totalAmount}"></span></p>
   </div>
 
-</div>
+  </div>
 
 </body>
 </html>

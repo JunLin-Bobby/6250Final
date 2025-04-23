@@ -50,6 +50,11 @@ public class Reservation {
     @Column(name = "status", nullable = false)
     private ReservationStatus status;
     
+    @ManyToOne
+    @JoinColumn(name = "creditcard_id")
+    private Creditcard creditcard;
+    
+    
     
     public int getReservationID() {
         return reservationID;
@@ -111,6 +116,11 @@ public class Reservation {
     public void setStatus(ReservationStatus status) {
         this.status = status;
     }
-
+    public Creditcard getCreditcard() {
+        return creditcard;
+    }
+    public void setCreditcard(Creditcard creditcard) {
+        this.creditcard = creditcard;
+    }
 
 }

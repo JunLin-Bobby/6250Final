@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.hotel.hoteldemo.dao.ReservationDAO;
+import com.example.hotel.hoteldemo.pojo.Creditcard;
 import com.example.hotel.hoteldemo.pojo.Reservation;
 import com.example.hotel.hoteldemo.pojo.ReservationStatus;
 import com.example.hotel.hoteldemo.pojo.User;
@@ -46,6 +47,8 @@ public class ManageReservationController {
 
         model.addAttribute("reservation", reservation);
         model.addAttribute("user", user);
+        Creditcard card = reservation.getCreditcard();
+        model.addAttribute("card", card);
         return "reservation-detail";
     }
 
@@ -61,7 +64,6 @@ public class ManageReservationController {
                 redirectAttributes.addFlashAttribute("message", "Reservation cancelled successfully.");
             }
         }
-
         return "redirect:/reservation-detail?id="+id;
     }
 

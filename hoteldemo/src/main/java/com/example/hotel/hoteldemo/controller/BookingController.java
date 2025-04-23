@@ -9,18 +9,23 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
+import com.example.hotel.hoteldemo.dao.CreditcardDAO;
 import com.example.hotel.hoteldemo.dao.ReservationDAO;
 import com.example.hotel.hoteldemo.dao.RoomDAO;
+import com.example.hotel.hoteldemo.pojo.Creditcard;
 import com.example.hotel.hoteldemo.pojo.Reservation;
 import com.example.hotel.hoteldemo.pojo.ReservationStatus;
 import com.example.hotel.hoteldemo.pojo.Room;
 import com.example.hotel.hoteldemo.pojo.User;
+import com.example.hotel.hoteldemo.validator.CreditCardValidator;
 import com.example.hotel.hoteldemo.validator.SearchValidator;
+
 
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.PostMapping;
 
 
@@ -34,6 +39,10 @@ public class BookingController {
     ReservationDAO reservationDAO;
     @Autowired
     private SearchValidator searchValidator;
+    @Autowired
+    private CreditCardValidator CreditCardValidator;
+    @Autowired
+    CreditcardDAO creditcardDAO;
 
     @GetMapping("/search-reservation")
     public String showPage(Model model,HttpSession session) {
@@ -64,13 +73,13 @@ public class BookingController {
         model.addAttribute("minPrice", minPrice);
         model.addAttribute("maxPrice", maxPrice);
         model.addAttribute("roomType", roomType);
-       
+        
         
         return "make-reservation";
     }
 
-    @PostMapping("/confirm-reservation")
-    public String showConfirmPage(@RequestParam int roomID,
+    @PostMapping("/process-reservation")
+    public String processReservation(@RequestParam int roomID,
                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkinDate,
                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkoutDate,
                                Model model,HttpSession session) {
@@ -83,8 +92,9 @@ public class BookingController {
         model.addAttribute("checkinDate", checkinDate);
         model.addAttribute("checkoutDate", checkoutDate);
         model.addAttribute("totalAmount", totalAmount);
-
-        return "confirm-reservation";
+        List<Creditcard> cards = creditcardDAO.findByUser(user);
+        model.addAttribute("cards", cards);                        
+        return "process-reservation";
     }
 
     @PostMapping("/review-reservation")
@@ -95,9 +105,54 @@ public class BookingController {
                                     @RequestParam String contactLastName,
                                     @RequestParam String contactPhoneNumber,
                                     @RequestParam double totalAmount,
+                                    @RequestParam(required = false) Integer creditCardID,
+                                    @RequestParam(required = false) String newCardNumber,
+                                    @RequestParam(required = false) String newExpireDate,
+                                    @RequestParam(required = false) String newCVV,
                                     Model model, HttpSession session) {
+        
         Room room = roomDAO.findByRoomID(roomID);
         User user = (User) session.getAttribute("loggedInUser");
+
+        Creditcard selectedCard = null;
+
+        
+        if (creditCardID != null) {
+            selectedCard = creditcardDAO.findById(creditCardID);
+        }
+        // use new card
+        else if (newCardNumber != null && newExpireDate != null && newCVV != null) {
+            if (!CreditCardValidator.isValidCardNumber(newCardNumber)) {
+                return returnToProcessWithError("Card number must be 16 digits.", model, room, user, checkinDate, checkoutDate, totalAmount);
+            }
+        
+            if (!CreditCardValidator.isValidCVV(newCVV)) {
+                
+                return returnToProcessWithError("CVV must be 3 digits.", model, room, user, checkinDate, checkoutDate, totalAmount);
+            }
+            if (!CreditCardValidator.isValidExpireDate(newExpireDate)) {
+            
+                return returnToProcessWithError("Expire date must be in MM/YY format.", model, room, user, checkinDate, checkoutDate, totalAmount);
+                
+            }
+            Creditcard newCard = new Creditcard();
+            newCard.setCardNumber(newCardNumber);
+            newCard.setExpireDate(newExpireDate);
+            newCard.setCvv(newCVV);
+            newCard.setUser(user);
+            creditcardDAO.save(newCard);
+            selectedCard = newCard;
+        }
+            
+            
+        
+
+        // validate if selectedc card or not 
+        if (selectedCard == null) {
+            model.addAttribute("error", "Please select or enter a valid credit card.");
+            return "process-reservation";
+        }
+
         model.addAttribute("user", user);
         model.addAttribute("room", room);
         model.addAttribute("checkinDate", checkinDate);
@@ -106,9 +161,11 @@ public class BookingController {
         model.addAttribute("contactLastName", contactLastName);
         model.addAttribute("contactPhoneNumber", contactPhoneNumber);
         model.addAttribute("totalAmount", totalAmount);
+        model.addAttribute("creditCard", selectedCard);
 
         return "review-reservation";
     }
+
     @PostMapping("/finalize-reservation")
     public String finalizeReservation(@RequestParam int roomID,
                                     @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkinDate,
@@ -117,12 +174,15 @@ public class BookingController {
                                     @RequestParam String contactLastName,
                                     @RequestParam String contactPhoneNumber,
                                     @RequestParam double totalAmount,
+                                    @RequestParam int creditCardID,
+                                    RedirectAttributes redirectAttributes,
                                     HttpSession session,
                                     Model model) {
 
         
         User user = (User) session.getAttribute("loggedInUser");
         Room room = roomDAO.findByRoomID(roomID);
+        Creditcard creditCard = creditcardDAO.findById(creditCardID);
 
         Reservation reservation = new Reservation();
         reservation.setUser(user);
@@ -133,6 +193,7 @@ public class BookingController {
         reservation.setContactLastName(contactLastName);
         reservation.setContactPhoneNumber(contactPhoneNumber);
         reservation.setTotalAmount(totalAmount);
+        reservation.setCreditcard(creditCard);
         reservation.setStatus(ReservationStatus.CREATED);
 
 
@@ -141,10 +202,32 @@ public class BookingController {
 
         model.addAttribute("user", user);
         model.addAttribute("reservation", reservation);
+        redirectAttributes.addFlashAttribute("message", "Reservation successful!");
+        redirectAttributes.addFlashAttribute("reservationID", reservation.getReservationID());
 
-        return "dashboard"; 
+        
+        return "redirect:/reservation-success";
+
+        
+    }
+    @GetMapping("/reservation-success")
+    public String showSuccessPage(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("loggedInUser");
+        model.addAttribute("user", user);
+        return "reservation-success";
     }
 
+    private String returnToProcessWithError(String error, Model model, Room room, User user, LocalDate checkin, LocalDate checkout, double totalAmount) {
+        model.addAttribute("error", error);
+        model.addAttribute("room", room);
+        model.addAttribute("user", user);
+        model.addAttribute("checkinDate", checkin);
+        model.addAttribute("checkoutDate", checkout);
+        model.addAttribute("totalAmount", totalAmount);
+        model.addAttribute("cards", creditcardDAO.findByUser(user));
+        return "process-reservation";
+    }
+    
 
 
 }

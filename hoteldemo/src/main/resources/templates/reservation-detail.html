@@ -66,6 +66,7 @@
 <body>
     <div class="navbar">
         <div class="nav-links">
+          <a th:href="@{/dashboard}" th:if="${user != null}">Dashboard</a>
           <a th:href="@{/my-reservation}" th:if="${user != null}">My Reservation</a>
           <a th:href="@{/search-reservation}" th:if="${user != null}">Make Reservation</a>
         </div>
@@ -116,6 +117,13 @@
       <p><strong>Phone:</strong> <span th:text="${reservation.contactPhoneNumber}"></span></p>
       <p th:if="${message}" style="color: green;" th:text="${message}"></p>
       <p>You can only cancel your reservation before the Checkin date.</p>
+    </div>
+    
+    <div class="section" th:if="${card != null}">
+      <h3>Payment Info</h3>
+      <p><strong>Card Ending In:</strong>
+        <span th:text="'**** **** **** ' + ${#strings.substring(card.cardNumber, 12)}"></span></p>
+      <p><strong>Expire Date:</strong> <span th:text="${card.expireDate}"></span></p>
     </div>
     <!-- Cancel Reservation -->
     <form th:action="@{/cancel-reservation}" method="post"

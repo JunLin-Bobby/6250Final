@@ -37,6 +37,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Reservation> reservations;
     
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Creditcard> creditcards;
 
     public User() {}
     

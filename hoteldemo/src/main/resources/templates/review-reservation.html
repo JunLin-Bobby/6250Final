@@ -44,7 +44,7 @@
 <body>
 
 <div class="container">
-  <h2>Review Your Reservation</h2>
+  <h2>Complete Your Reservation</h2>
 
   <!-- Contact Info -->
   <div class="section">
@@ -64,6 +64,16 @@
     <p><strong>Check-out:</strong> <span th:text="${#temporals.format(checkoutDate, 'MM/dd/yyyy')}"></span></p>
     <p><strong>Total Amount:</strong> $<span th:text="${totalAmount}"></span></p>
   </div>
+  
+  <!-- Card Info -->
+  <div class="section">
+    <h3>Payment Method</h3>
+    <p>
+      <strong>Card:</strong>
+      <span th:text="'**** **** **** ' + ${#strings.substring(creditCard.cardNumber, 12)}"></span>
+      (<span th:text="'Exp: ' + ${creditCard.expireDate}"></span>)
+    </p>
+  </div>
 
   <!-- Submit form -->
   <form th:action="@{/finalize-reservation}" method="post">
@@ -74,6 +84,7 @@
     <input type="hidden" name="contactLastName" th:value="${contactLastName}" />
     <input type="hidden" name="contactPhoneNumber" th:value="${contactPhoneNumber}" />
     <input type="hidden" name="totalAmount" th:value="${totalAmount}" />
+    <input type="hidden" name="creditCardID" th:value="${creditCard.id}" />
 
     <button type="submit">Submit Reservation</button>
   </form>

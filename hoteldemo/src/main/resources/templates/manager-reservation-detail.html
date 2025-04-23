@@ -33,8 +33,16 @@
     <a th:href="@{/system_admin/dashboard}" style="color: white; text-decoration: underline;">Back to Dashboard</a>
   </div>
   <div class="container">
-    <h2>Reservation Detail</h2>
+
+    <div th:if="${message}" style="color: green; font-weight: bold; text-align: center;">
+      <p th:text="${message}"></p>
+    </div>
+    <div th:if="${error}" style="color: red; font-weight: bold; text-align: center;">
+      <p th:text="${error}"></p>
+    </div>
     
+    <h2>Reservation Detail</h2>
+
     <div class="section">
       <h3>User Info</h3>
       <p><strong>User ID:</strong> <span th:text="${reservation.user.userID}"></span></p>
@@ -58,10 +66,27 @@
       <p><strong>Total Amount:</strong> $<span th:text="${reservation.totalAmount}"></span></p>
     </div>
     
+
     <div class="section">
       <h3>Contact Info</h3>
       <p><strong>Name:</strong> <span th:text="${reservation.contactFirstName}"></span> <span th:text="${reservation.contactLastName}"></span></p>
       <p><strong>Phone:</strong> <span th:text="${reservation.contactPhoneNumber}"></span></p>
+      <p th:if="${message}" style="color: green;" th:text="${message}"></p>
+    </div>
+    
+    <div class="section">
+      <h3>Update Reservation Dates</h3>
+      <form th:action="@{/system_admin/reservation/update-dates}" method="post">
+        <input type="hidden" name="id" th:value="${reservation.reservationID}" />
+    
+        <label>New Check-in Date:</label>
+        <input type="date" name="newCheckin" th:value="${#temporals.format(reservation.checkInDate, 'yyyy-MM-dd')}" required />
+    
+        <label>New Check-out Date:</label>
+        <input type="date" name="newCheckout" th:value="${#temporals.format(reservation.checkOutDate, 'yyyy-MM-dd')}" required />
+    
+        <button type="submit" style="margin-top: 1rem; padding: 0.6rem 1.2rem;">Update Dates</button>
+      </form>
     </div>
 
     <form th:action="@{/system_admin/reservation/cancel}" method="post" th:if="${isCancelable}" onsubmit="return confirm('Are you sure you want to cancel this reservation?');">
