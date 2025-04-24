@@ -42,7 +42,7 @@ public class paymentController {
         model.addAttribute("newCard", new Creditcard());
         return "payment";
     }
-
+    //Process adding new card
     @PostMapping("/payment/add")
     public String addCard(@ModelAttribute("newCard") Creditcard card, HttpSession session, RedirectAttributes redirectAttributes,Model model) {
         User user = (User) session.getAttribute("loggedInUser");

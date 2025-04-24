@@ -26,9 +26,9 @@ public class HoteldemoApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-		// TODO Auto-generated method stub
+		
 		 System.out.println(" HotelApp is running inserting DemoData....");
-
+		//Create HardCode data for basic rooms and system admin
         HotelManager sa = new HotelManager();
 		sa.setUserName("sa");
 		sa.setPassword("0000");

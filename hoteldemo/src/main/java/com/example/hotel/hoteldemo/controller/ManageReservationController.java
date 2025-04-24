@@ -34,12 +34,11 @@ public class ManageReservationController {
         model.addAttribute("user", user);
         return "my-reservation";
     }
-
+    //show the reservation detail
     @GetMapping("/reservation-detail")
     public String showReservationDetail(@RequestParam int id, Model model, HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");
         Reservation reservation = reservationDAO.findById(id);
-
         
         if (reservation == null || reservation.getUser().getUserID() != user.getUserID()) {
             return "redirect:/my-reservation";
@@ -47,11 +46,10 @@ public class ManageReservationController {
 
         model.addAttribute("reservation", reservation);
         model.addAttribute("user", user);
-        Creditcard card = reservation.getCreditcard();
-        model.addAttribute("card", card);
+        
         return "reservation-detail";
     }
-
+    //Process the Cancel reservation buttom
     @PostMapping("/cancel-reservation")
     public String cancelReservation(@RequestParam int id, HttpSession session, RedirectAttributes redirectAttributes) {
         User user = (User) session.getAttribute("loggedInUser");

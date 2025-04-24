@@ -34,25 +34,27 @@ public class ManagerBehaviorController {
     RoomDAO roomDAO;
     @Autowired
     ReservationDAO reservationDAO;
+    //show all users
     @GetMapping("/users")
     public String viewAllUsers(Model model) {
         List<User> users = userDAO.findAll(); 
         model.addAttribute("users", users);
         return "view-users"; 
     }
-
+    //show all rooms
     @GetMapping("/rooms")
     public String viewAllRooms(Model model) {
         List<Room> rooms = roomDAO.findAll();
         model.addAttribute("rooms", rooms);
         return "view-rooms";
     }
+    //show add-new-room page
     @GetMapping("/rooms/add")
     public String showAddRoomForm(Model model) {
         model.addAttribute("room", new Room());
         return "add-room-form";
     }
-
+    //process add new room
     @PostMapping("/rooms/add")
     public String processAddRoom(@Valid @ModelAttribute("room") Room room,
                                   BindingResult result, Model model) {
@@ -62,16 +64,17 @@ public class ManagerBehaviorController {
         roomDAO.save(room);
         return "redirect:/system_admin/rooms";
     }
-
+    //show delete-room page
     @GetMapping("/rooms/delete")
     public String showDeleteRoomPage(Model model) {
         model.addAttribute("rooms", roomDAO.findAll());
         return "delete-room-form";
     }
-
+    //process delete room
     @PostMapping("/rooms/delete")
     public String processDeleteRoom(@RequestParam("roomID") int roomID, RedirectAttributes redirectAttributes) {
         Room room = roomDAO.findByRoomID(roomID);
+        //Can not delete the room which is reserved
         boolean hasCreatedReservation = room.getReservations().stream()
             .anyMatch(r -> r.getStatus().name().equals("CREATED"));
 
@@ -117,13 +120,10 @@ public class ManagerBehaviorController {
             redirectAttributes.addFlashAttribute("error", "Reservation not found.");
             return "redirect:/system_admin/dashboard";
         }
-
-    
         if (!newCheckout.isAfter(newCheckin)) {
             redirectAttributes.addFlashAttribute("error", "Check-out date must be after check-in date.");
             return "redirect:/system_admin/reservation-detail?id=" + id;
         }
-
         reservation.setCheckInDate(newCheckin);
         reservation.setCheckOutDate(newCheckout);
         reservationDAO.update(reservation);

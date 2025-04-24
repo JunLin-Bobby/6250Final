@@ -39,7 +39,7 @@ public class RegisterValidator {
 
 
         String email = userDTO.getEmail();
-        if (email == null || !email.contains("@") || email.startsWith("@") || email.endsWith("@") || email.split("@").length != 2) {
+        if (email == null || !email.contains("@") || email.split("@").length != 2) {
             result.rejectValue("email", null, "Invalid email format.");
         }
 

@@ -31,7 +31,7 @@ public class HotelManagerController {
     ManagerDAO managerDAO;
     @Autowired
     ReservationDAO reservationDAO;
-
+    
     @GetMapping("/login")
     public String showLoginPage(HttpSession session,Model model) {
          if (session.getAttribute("loggedInManager") != null) {

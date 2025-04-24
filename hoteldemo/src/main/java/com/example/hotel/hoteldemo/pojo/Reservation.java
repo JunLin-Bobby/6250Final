@@ -49,13 +49,31 @@ public class Reservation {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private ReservationStatus status;
+
+    @Column(name = "card_last4")
+    private String cardLast4;
+
+    @Column(name = "card_expire_date")
+    private String cardExpireDate;
+
+    // @ManyToOne
+    // @JoinColumn(name = "creditcard_id")
+    // private Creditcard creditcard;
     
-    @ManyToOne
-    @JoinColumn(name = "creditcard_id")
-    private Creditcard creditcard;
     
     
-    
+    public String getCardLast4() {
+        return cardLast4;
+    }
+    public void setCardLast4(String cardLast4) {
+        this.cardLast4 = cardLast4;
+    }
+    public String getCardExpireDate() {
+        return cardExpireDate;
+    }
+    public void setCardExpireDate(String cardExpireDate) {
+        this.cardExpireDate = cardExpireDate;
+    }
     public int getReservationID() {
         return reservationID;
     }
@@ -116,11 +134,11 @@ public class Reservation {
     public void setStatus(ReservationStatus status) {
         this.status = status;
     }
-    public Creditcard getCreditcard() {
-        return creditcard;
-    }
-    public void setCreditcard(Creditcard creditcard) {
-        this.creditcard = creditcard;
-    }
+    // public Creditcard getCreditcard() {
+    //     return creditcard;
+    // }
+    // public void setCreditcard(Creditcard creditcard) {
+    //     this.creditcard = creditcard;
+    // }
 
 }
